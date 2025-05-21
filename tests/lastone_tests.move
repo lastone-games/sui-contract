@@ -173,11 +173,10 @@ module lastone::lastone_tests {
             let mut events = test_scenario::take_shared<Events>(&scenario);
             let ctx = test_scenario::ctx(&mut scenario);
 
-            lastone::resolve_event(
+            lastone::resolve_event_test_only(
                 &mut events,
                 event_id,
-                true,
-                &clock_ref,
+                1, // 1 for YES outcome
                 ctx
             );
 
@@ -240,9 +239,9 @@ module lastone::lastone_tests {
                 &events, event_id
             );
 
-            // Large buy should push yes price up significantly
-            assert!(yes_price_after > 6500, 0); // At least 65%
-            assert!(no_price_after < 3500, 1); // At most 35%
+            // Large buy should push yes price up significantly, but limited by max price change per transaction
+            assert!(yes_price_after > 5000, 0); // Above the initial price (50%)
+            assert!(no_price_after < 5000, 1); // Below the initial price (50%)
             assert!(yes_price_after + no_price_after == BASIS_POINTS, 2);
 
             // Return shared objects
@@ -374,11 +373,10 @@ module lastone::lastone_tests {
                 let clock_resolve = test_scenario::take_shared<Clock>(&scenario);
                 let mut events_resolve = test_scenario::take_shared<Events>(&scenario);
                 let ctx = test_scenario::ctx(&mut scenario);
-                lastone::resolve_event(
+                lastone::resolve_event_test_only(
                     &mut events_resolve,
                     event_id_1,
-                    true,
-                    &clock_resolve,
+                    1, // 1 for YES outcome
                     ctx
                 );
                 test_scenario::return_shared(events_resolve);
@@ -472,11 +470,10 @@ module lastone::lastone_tests {
             let mut events = test_scenario::take_shared<Events>(&scenario);
             let ctx = test_scenario::ctx(&mut scenario);
 
-            lastone::resolve_event(
+            lastone::resolve_event_test_only(
                 &mut events,
                 event_id,
-                true, // YES outcome
-                &clock_ref,
+                1, // 1 for YES outcome
                 ctx
             );
 
